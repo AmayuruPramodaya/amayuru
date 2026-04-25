@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amayuru Pramodaya</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1f3d;
+    --navy-mid: #1a3460;
+    --accent: #2e7aff;
+    --accent-light: #e8f0fe;
+    --gold: #f5a623;
+    --text: #1a1a2e;
+    --text-muted: #5a6480;
+    --border: #e0e6f0;
+    --surface: #f7f9ff;
+    --white: #ffffff;
+    --sidebar-w: 270px;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: var(--sidebar-w);
+    background: var(--navy);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    padding: 2rem 0 1.5rem;
+  }
+
+  .sidebar-profile {
+    text-align: center;
+    padding: 0 1.5rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .profile-photo-wrap {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    overflow: hidden;
+    margin: 0 auto 0.75rem;
+    background: var(--navy-mid);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .profile-photo-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  .profile-photo-placeholder {
+    font-size: 2.2rem;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .sidebar-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: #fff;
+    line-height: 1.3;
+    margin-bottom: 0.3rem;
+  }
+
+  .sidebar-tag {
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  nav {
+    padding: 1rem 0;
+    flex: 1;
+  }
+
+  .nav-section-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.3);
+    padding: 1rem 1.5rem 0.35rem;
+  }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.55rem 1.5rem;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 400;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+
+  nav a:hover, nav a.active {
+    color: #fff;
+    background: rgba(46,122,255,0.12);
+    border-left-color: var(--accent);
+  }
+
+  .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.25);
+    text-align: center;
+  }
+
+  /* ── MOBILE MENU TOGGLE ── */
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    z-index: 101;
+  }
+
+  .menu-toggle:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    padding: 2.5rem 3rem;
+    max-width: 960px;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .page-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 0.3rem;
+  }
+  .page-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--navy);
+    margin: 2rem 0 1rem;
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 0.4rem;
+  }
+
+  p { font-size: 0.9rem; color: #3a4060; line-height: 1.75; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-accent {
+    border-left: 4px solid var(--accent);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── HERO (HOME) ── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    border-radius: 18px;
+    padding: 3rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-photo {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    border: 4px solid rgba(255,255,255,0.2);
+    object-fit: cover;
+    background: rgba(255,255,255,0.1);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    overflow: hidden;
+  }
+
+  .hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .hero-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+
+  .hero-tagline {
+    margin: 0.6rem 0;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .hero-chips {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .chip {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .info-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+  }
+
+  .info-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .info-value {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--navy);
+  }
+
+  /* ── SKILLS ── */
+  .skill-category {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .skill-category h3 {
+    color: var(--navy);
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  .skill-tags {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+  }
+
+  .skill-tag {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid #c5d8ff;
+    border-radius: 6px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  /* ── PROJECT CARD ── */
+  .project-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .project-header {
+    background: var(--navy);
+    padding: 1rem 1.5rem;
+    color: white;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .project-header h3 {
+    color: white;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .project-badge {
+    background: rgba(46,122,255,0.35);
+    border: 1px solid rgba(46,122,255,0.5);
+    border-radius: 20px;
+    padding: 0.2rem 0.7rem;
+    font-size: 0.72rem;
+    color: #a8c4ff;
+  }
+
+  .project-body {
+    padding: 1.5rem;
+  }
+
+  .project-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .meta-item {
+    font-size: 0.8rem;
+  }
+  .meta-item span {
+    display: block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+  }
+
+  /* ── REFLECTION ── */
+  .reflection-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .reflection-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .reflection-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .rg-item {
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 0.85rem;
+  }
+
+  .rg-item span {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .rg-item p { font-size: 0.83rem; }
+
+  /* ── TIMELINE (FIELD VISITS) ── */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .tl-dot {
+    position: absolute;
+    left: -1.65rem;
+    top: 0.3rem;
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 3px solid var(--surface);
+  }
+
+  .tl-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+  }
+
+  /* ── CERT ── */
+  .cert-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .cert-icon {
+    width: 44px; height: 44px;
+    background: var(--accent-light);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  /* ── CONTACT ── */
+  .contact-link {
+    display: flex; align-items: center; gap: 1rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(46,122,255,0.1);
+  }
+
+  .contact-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  /* ── GOALS ── */
+  .goal-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .goal-card h3 {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .goal-list { list-style: none; }
+
+  .goal-list li {
+    font-size: 0.88rem;
+    color: #3a4060;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    line-height: 1.5;
+  }
+
+  .goal-list li:last-child { border-bottom: none; }
+
+  .goal-list li::before {
+    content: '→';
+    color: var(--accent);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  /* ── PLACEHOLDER TEXT ── */
+  .placeholder {
+    background: #fff8e7;
+    border: 1px dashed #f5c842;
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8rem;
+    color: #8a6500;
+    display: inline-block;
+    margin: 0.15rem 0;
+  }
+
+  /* ── ACHIEVEMENT BADGE ── */
+  .achievement {
+    display: flex; align-items: center; gap: 1rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .ach-icon {
+    font-size: 1.6rem;
+    width: 48px; text-align: center;
+  }
+
+  /* ── RESPONSIVE ── */
+  
+  /* Tablet: 768px and below */
+  @media (max-width: 768px) {
+    :root {
+      --sidebar-w: 0;
+    }
+
+    body {
+      flex-direction: column;
+    }
+
+    #sidebar {
+      position: relative;
+      width: 100%;
+      height: auto;
+      padding: 1rem;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      gap: 0.5rem;
+    }
+
+    .sidebar-profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0;
+      border-bottom: none;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .profile-photo-wrap {
+      width: 50px;
+      height: 50px;
+      margin: 0;
+      flex-shrink: 0;
+      border-width: 2px;
+    }
+
+    .sidebar-name {
+      font-size: 0.85rem;
+      margin-bottom: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-tag {
+      font-size: 0.55rem;
+      display: none;
+    }
+
+    .menu-toggle {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    nav {
+      display: none;
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--navy);
+      flex-direction: column;
+      width: 100%;
+      padding: 0;
+      overflow-y: auto;
+      z-index: 99;
+      max-height: none;
+    }
+
+    nav.active {
+      display: flex;
+    }
+
+    .nav-section-label {
+      padding: 0.75rem 1rem 0.5rem;
+    }
+
+    nav a {
+      padding: 0.5rem 1rem;
+    }
+
+    .sidebar-footer {
+      display: none;
+    }
+
+    main {
+      margin-left: 0;
+      padding: 1.5rem 1rem;
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .page-title {
+      font-size: 1.8rem;
+    }
+
+    .page-subtitle {
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    h3 {
+      font-size: 0.95rem;
+    }
+
+    p {
+      font-size: 0.85rem;
+    }
+
+    .hero {
+      flex-direction: column;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      gap: 1.5rem;
+    }
+
+    .hero-name {
+      font-size: 1.8rem;
+    }
+
+    .hero-tagline {
+      font-size: 0.85rem;
+    }
+
+    .hero-photo {
+      width: 100px;
+      height: 100px;
+    }
+
+    .info-grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .card {
+      padding: 1.25rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .skill-category {
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .skill-tags {
+      gap: 0.4rem;
+    }
+
+    .skill-tag {
+      padding: 0.25rem 0.6rem;
+      font-size: 0.72rem;
+    }
+
+    .project-card {
+      margin-bottom: 1.25rem;
+    }
+
+    .project-header {
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .project-meta {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .reflection-grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .reflection-card {
+      padding: 1.25rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .timeline {
+      padding-left: 1.5rem;
+    }
+
+    .tl-dot {
+      left: -1.25rem;
+    }
+
+    .tl-card {
+      padding: 1rem;
+    }
+
+    .cert-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .cert-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+    }
+
+    .contact-link {
+      padding: 0.85rem 1rem;
+      gap: 0.75rem;
+    }
+
+    .contact-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 1.1rem;
+    }
+
+    .achievement {
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+    }
+
+    .ach-icon {
+      font-size: 1.4rem;
+    }
+
+    .goal-card {
+      padding: 1.25rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .goal-list li {
+      font-size: 0.82rem;
+      padding: 0.3rem 0;
+    }
+  }
+
+  /* Mobile: 480px and below */
+  @media (max-width: 480px) {
+    main {
+      padding: 1rem 0.75rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.6rem;
+    }
+
+    p {
+      font-size: 0.8rem;
+    }
+
+    .hero {
+      padding: 1.5rem 1rem;
+      gap: 1rem;
+    }
+
+    .hero-name {
+      font-size: 1.5rem;
+    }
+
+    .hero-tagline {
+      font-size: 0.8rem;
+      margin: 0.5rem 0;
+    }
+
+    .hero-photo {
+      width: 80px;
+      height: 80px;
+    }
+
+    .hero-chips {
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .chip {
+      font-size: 0.68rem;
+      padding: 0.25rem 0.7rem;
+    }
+
+    .info-item {
+      padding: 0.85rem 1rem;
+    }
+
+    .info-label {
+      font-size: 0.62rem;
+    }
+
+    .info-value {
+      font-size: 0.85rem;
+    }
+
+    .card {
+      padding: 1rem 0.85rem;
+      margin-bottom: 0.85rem;
+      border-radius: 8px;
+    }
+
+    .skill-category {
+      padding: 0.9rem 0.85rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .skill-category h3 {
+      font-size: 0.92rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .skill-tag {
+      padding: 0.2rem 0.55rem;
+      font-size: 0.68rem;
+      border-radius: 4px;
+    }
+
+    .project-header {
+      padding: 0.85rem 1rem;
+    }
+
+    .project-header h3 {
+      font-size: 0.92rem;
+    }
+
+    .project-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.6rem;
+    }
+
+    .project-body {
+      padding: 1rem 0.85rem;
+    }
+
+    .meta-item {
+      font-size: 0.75rem;
+    }
+
+    .meta-item span {
+      font-size: 0.6rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .reflection-card {
+      padding: 1rem 0.85rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .reflection-label {
+      font-size: 0.6rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .rg-item {
+      padding: 0.75rem;
+    }
+
+    .rg-item span {
+      font-size: 0.6rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .rg-item p {
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
+
+    .timeline {
+      padding-left: 1.25rem;
+    }
+
+    .tl-dot {
+      width: 12px;
+      height: 12px;
+      left: -1.05rem;
+      top: 0.2rem;
+    }
+
+    .tl-card {
+      padding: 0.9rem 0.85rem;
+    }
+
+    .tl-card h3 {
+      font-size: 0.9rem;
+    }
+
+    .cert-card {
+      padding: 0.8rem 0.85rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .cert-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 1.1rem;
+    }
+
+    .cert-card h3 {
+      font-size: 0.92rem;
+    }
+
+    .cert-card p {
+      font-size: 0.78rem;
+    }
+
+    .contact-link {
+      padding: 0.8rem 0.85rem;
+      gap: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 1rem;
+    }
+
+    .contact-link div:last-child {
+      font-size: 0.9rem;
+    }
+
+    .achievement {
+      padding: 0.8rem 0.85rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .ach-icon {
+      font-size: 1.3rem;
+      width: 40px;
+    }
+
+    .achievement h3 {
+      font-size: 0.9rem;
+    }
+
+    .goal-card {
+      padding: 1rem 0.85rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .goal-card h3 {
+      font-size: 0.95rem;
+    }
+
+    .goal-list {
+      font-size: 0.75rem;
+    }
+
+    .goal-list li {
+      font-size: 0.78rem;
+      padding: 0.25rem 0;
+    }
+  }
+
+  /* Large screens: 1200px and above */
+  @media (min-width: 1200px) {
+    main {
+      max-width: 1000px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     SIDEBAR NAVIGATION
+════════════════════════════════════════ -->
+<aside id="sidebar">
+  <div class="sidebar-profile">
+    <div class="profile-photo-wrap">
+      <!-- Replace src with your photo path -->
+      <div class="profile-photo-placeholder"><img src="profile.jpg" alt="Profile photo"></div>
+      <!-- <div class="profile-photo-placeholder">👤</div> -->
+    </div>
+    <div class="sidebar-name">Amayuru Pramodaya</div>
+    <div class="sidebar-tag">ICT Undergraduate</div>
+  </div>
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu">☰</button>
+
+  <nav id="navMenu">
+    <div class="nav-section-label">Main</div>
+    <a href="#" class="active" onclick="showSection('home', this)">
+      <span class="nav-icon">🏠</span> Home
+    </a>
+    <a href="#" onclick="showSection('about', this)">
+      <span class="nav-icon">👤</span> About Me
+    </a>
+
+    <div class="nav-section-label">Academic</div>
+    <a href="#" onclick="showSection('projects', this)">
+      <span class="nav-icon">📁</span> Academic Projects
+    </a>
+    <a href="#" onclick="showSection('skills', this)">
+      <span class="nav-icon">⚙️</span> Technical Skills
+    </a>
+    <!-- <a href="#" onclick="showSection('research', this)">
+      <span class="nav-icon">🔬</span> Research & Engagement
+    </a> -->
+    <a href="#" onclick="showSection('certifications', this)">
+      <span class="nav-icon">🏅</span> Certifications
+    </a>
+
+    <div class="nav-section-label">Experience</div>
+    <a href="#" onclick="showSection('fieldvisits', this)">
+      <span class="nav-icon">🏭</span> Field Visits
+    </a>
+    <a href="#" onclick="showSection('clubs', this)">
+      <span class="nav-icon">🤝</span> Clubs & Leadership
+    </a>
+    <a href="#" onclick="showSection('achievements', this)">
+      <span class="nav-icon">🏆</span> Achievements
+    </a>
+
+    <div class="nav-section-label">Reflection</div>
+    <a href="#" onclick="showSection('reflection', this)">
+      <span class="nav-icon">📝</span> Reflections
+    </a>
+    <a href="#" onclick="showSection('goals', this)">
+      <span class="nav-icon">🎯</span> Career Goals
+    </a>
+    <a href="#" onclick="showSection('contact', this)">
+      <span class="nav-icon">📬</span> Contact
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">E-Portfolio · CA 02 DELT 22552</div>
+</aside>
+
+<!-- ════════════════════════════════════════
+     MAIN CONTENT AREA
+════════════════════════════════════════ -->
+<main>
+
+  <!-- ── 1. HOME ── -->
+  <section id="home" class="section active">
+    <div class="hero">
+      <div class="hero-photo"> <img src="profile.jpg" alt="Profile photo"></div>
+      <div>
+        <div class="hero-name">Amayuru Pramodaya</div>
+        <div class="hero-tagline">Aspiring ICT Undergraduate | Full Stack Developer | UI/UX Designer | Digital Creator | Cloud Enthusiast</div>
+        <div class="hero-chips">
+          <span class="chip">Student No: CT/2022/038</span>
+          <span class="chip">Bachelor of Information Communication Technology</span>
+          <span class="chip">Faculty of Computing and Technology</span>
+          <span class="chip">University of Kelaniya</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">Full Name</div>
+        <div class="info-value">Amayuru Pramodaya</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Student Number</div>
+        <div class="info-value">CT/2022/038</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Degree Program</div>
+        <div class="info-value">Bachelor of Information Communication Technology</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Faculty</div>
+        <div class="info-value">Faculty of Computing and Technology</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">University</div>
+        <div class="info-value">University of Kelaniya</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Academic Year</div>
+        <div class="info-value">Year 2</div>
+      </div>
+    </div>
+
+    <h2>Short Bio</h2>
+    <div class="card">
+      <p>
+        My name is Amayuru Pramodaya, and I am a second year ICT undergraduate studying at the 
+        Faculty of Computing and Technology, University of Kelaniya. My reasons for choosing this 
+        field are simple: I am very passionate about technology and creating technological 
+        solutions for everyday challenges. I have learned how to create graphics and edit videos. 
+        I have a lot of experience in photography and fullstack web development. Additionally, 
+        I am passionate about learning UI/UX design and cloud technologies, as these skills will 
+        motivate me further to learn and improve. Apart from my studies, I enjoy doing projects 
+        that allow me to build creative yet practical solutions. Furthermore, it is also a passion 
+        of mine to learn about design trends and do media projects.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── 2. ABOUT ME ── -->
+  <section id="about" class="section">
+    <div class="page-title">About Me</div>
+    <div class="page-subtitle">Personal Profile</div>
+
+    <h2>Educational Background</h2>
+    <div class="card card-accent">
+      <h3>University of Kelaniya — (2024 – Present)</h3>
+      <p>Bachelor of Information Communication Technology</p>
+      <br>
+      <h3>Keerthi Abeywickrama National School - Morawaka,Matara — (2014 - 2023)</h3>
+      <p>GCE A/L (2022/2023) Engineering Technology Stream</p>
+      <br>
+      <!-- <h3>[Primary/Junior School Name] — [Year]</h3>
+      <p>[GCE O/L or equivalent. Brief summary]</p> -->
+    </div>
+
+    <h2>Interests</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>⚡ Technical Interests</h3>
+        <p>Software Engineering, Web Development, Database Management, Cloud Computing, AI</p>
+      </div>
+      <div class="card">
+        <h3>🎨 Personal Interests</h3>
+        <p>Graphic Design, Video Editing, Design, Photography, Volunteering</p>
+      </div>
+    </div>
+
+    <h2>Career Goals</h2>
+    <div class="card card-accent">
+      <p>I want to become a Software Engineer professionally in the field of DevOps and Cloud. 
+        I wish to participate in modern technological initiatives that can make life easy for 
+        others. I also wish to acquire knowledge about developing, operating, and deploying 
+        scalable applications on the cloud. I also aim at improving my problem-solving, teamwork, 
+        and leadership abilities. I intend to keep up with my professional development to become a 
+        professional that can contribute towards making efficient technological solutions.</p>
+    </div>
+
+    <h2>Personal Values</h2>
+    <div class="card-grid">
+      <div class="card"><h3>🔍 Curiosity</h3><p>I always explore new technologies and try to understand how things work by experimenting and asking questions.</p></div>
+      <div class="card"><h3>🤝 Integrity</h3><p>I believe in being honest and ethical in all my actions and decisions.</p></div>
+      <div class="card"><h3>💡 Innovation</h3><p>I like to think creatively and use my skills to build unique and useful digital solutions.</p></div>
+      <div class="card"><h3>📚 Lifelong Learning</h3><p>I am committed to continuous learning and self-improvement throughout my career.</p></div>
+    </div>
+  </section>
+
+  <!-- ── 3. ACADEMIC PROJECTS ── -->
+  <section id="projects" class="section">
+    <div class="page-title">Academic Projects</div>
+    <!-- <div class="page-subtitle">Selected work from Year 1 and Year 2 (Sem I & II)</div> -->
+
+    <!-- PROJECT 1 -->
+    <div class="project-card">
+      <div class="project-header">
+        <h3>LLR - Lanka Land Rendting Website</h3>
+        <span class="project-badge">Design Ideation and Creative Development</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta">
+          <div class="meta-item"><span>Objective</span>The project aims to simplify the process of listing, searching, and renting land through a clean and easy-to-use interface.</div>
+          <div class="meta-item"><span>Your Role</span>Frontend Developer, Presenter</div>
+          <div class="meta-item"><span>Tools / Technologies</span>React, Node.js, Tailwind CSS, VS Code</div>
+        </div>
+        <p>LLR (Lanka Land Renting) is an application designed to address the issue of finding and 
+          renting out lands. People needed to visit the site personally to verify the availability 
+          of land and landowners had problems identifying suitable tenants. To overcome this problem,
+          we have designed a website through which landowners will be able to advertise their lands 
+          along with photographs. Through our website, one would be able to find appropriate lands 
+          without visiting the sites personally.</p>
+        <br>
+        <p><strong>Outcomes:</strong> The end product was a functional, easy-to-use land renting website that connects land owners with potential renters. We showed that we can develop a real-world web solution through teamwork, problem solving, and fullstack development skills.</p>
+        <br>
+        <p style="font-size:0.78rem; color: var(--text-muted);">
+          Evidence: <a href="https://github.com/AmayuruPramodaya/land-renting-site.git" target="_blank">GitHub Repository</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- PROJECT 2 -->
+    <div class="project-card">
+      <div class="project-header">
+        <h3>Prosthetic Device Design</h3>
+        <span class="project-badge">Fundamental Practices in Technology</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta">
+          <div class="meta-item"><span>Objective</span>Design a simple, low-cost prosthetic device to restore basic gripping and hand functionality using non-electronic materials. </div>
+          <div class="meta-item"><span>Your Role</span>Tester & Feedback Coordinator</div>
+          <div class="meta-item"><span>Tools / Technologies</span>Cardboard, Rubber Bands, Velcro</div>
+        </div>
+        <p>This project involved designing and testing a low-cost, non-electronic prosthetic device 
+          using simple materials like cardboard, rubber bands, and Velcro. The goal was to create a 
+          functional device that could assist individuals in regaining grip and performing daily 
+          tasks.</p>
+        <br>
+        <p><strong>Outcomes:</strong> The outcome was a working, low-cost prosthetic that greatly 
+          improved the user’s ability to perform daily tasks. We showed we can come up with a 
+          practical solution, design and test it, using simple materials and iterative development 
+          processes.</p>
+      </div>
+    </div>
+
+    <!-- PROJECT 3 (optional) -->
+    <div class="project-card">
+      <div class="project-header">
+        <h3>Drive Drip</h3>
+        <span class="project-badge">Project in Technology</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta">
+          <div class="meta-item"><span>Objective</span>In order to create a web-based platform for Sri Lanka’s automobile industry to facilitate real-time visualization of 3D modifications as well as the networking of all parties involved within one central hub.</div>
+          <div class="meta-item"><span>Your Role</span>Team Lead and Frontend Developer</div>
+          <div class="meta-item"><span>Tools / Technologies</span>React, Node.js, Three.js, Django, TailwindCSS, GitHub</div>
+        </div>
+        <p>DRIVEDRIP is a web application that changes the way car owners buy parts and customize 
+          cars. People can choose the desired car brand and customize the car instantly through a 
+          3D simulation process, which functions similarly to those in video games. Our web app 
+          offers the user not only an extensive parts store but also includes AI chatbots, live chat 
+          options, and certified mechanics' services. DRIVEDRIP was developed using React.js and 
+          Three.js on the frontend and Django on the backend.</p>
+        <br>
+        <p><strong>Outcomes:</strong> Delivered a working 3D vehicle customization using Three.js 
+          as part of a working MVP - Conducted research with 50+ participants to validate market 
+          demand of 100% interest in visualization features. Developed and launched a responsive 
+          web app with an AI chatbot, live chat and marketplace functionality. 
+          User feedback: Positive with appreciation for the innovative concept and user-friendly 
+          design. Effectively led and collaborated with teams through using Agile development 
+          methodology</p>
+        <br>
+        <p style="font-size:0.78rem; color: var(--text-muted);">
+          Evidence: <a href="https://www.linkedin.com/posts/amayuru-pramodaya-50703a298_firstyearproject-webdevelopment-innovation-activity-7353703801192636416-xxyw?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEfoeVcBVc2guYl5IPAif5og1wgee-m0R-Y" target="_blank">Linkedin</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4. TECHNICAL SKILLS ── -->
+  <section id="skills" class="section">
+    <div class="page-title">Technical Skills</div>
+    <div class="page-subtitle">Programming, tools and technologies</div>
+
+    <div class="skill-category">
+      <h3>💻 Programming Languages</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">C++</span>
+        <span class="skill-tag">HTML</span>
+        <span class="skill-tag">CSS</span>
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">Python</span>
+        <!-- Add or remove skills to match your actual knowledge -->
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <h3>🛠️ Tools & Technologies</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Git/GitHub</span>
+        <span class="skill-tag">Figma</span>
+        <span class="skill-tag">Adobe Photoshop</span>
+        <span class="skill-tag">Adobe Premiere Pro</span>
+        <span class="skill-tag">Adobe After Effects</span>
+        <span class="skill-tag">Microsoft Office</span>
+        <!-- Add any others you have used -->
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <h3> Digital Creative Skills</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Graphic Design</span>
+        <span class="skill-tag">Video Editing</span>
+        <span class="skill-tag">Photography</span>
+        <!-- <span class="skill-tag">Sensor Integration & Testing</span>
+        <span class="skill-tag">Electrical Wiring & Safety</span> -->
+        <!-- Add workshop or lab skills you have -->
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <h3>🤝 Soft Skills</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Communication</span>
+        <span class="skill-tag">Teamwork & Collaboration</span>
+        <span class="skill-tag">Problem Solving</span>
+        <span class="skill-tag">Time Management</span>
+        <span class="skill-tag">Adaptability</span>
+        <span class="skill-tag">Critical Thinking</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. FIELD VISITS ── -->
+  <section id="fieldvisits" class="section">
+    <div class="page-title">Industry Experience</div>
+    <div class="page-subtitle">Practical exposure to industry environments</div>
+
+    <div class="timeline">
+
+      <!-- VISIT 1 -->
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <h3>Software Engineer - Intern</h3>
+          <p style="font-size:0.78rem; color: var(--text-muted); margin-bottom:0.75rem;">FCT Technologies &nbsp;|&nbsp; ⏱ 2026 - 2027</p>
+          <p><strong>Purpose:</strong>To gain practical experience in a professional software development setting, contribute to a real project, and apply my academic knowledge to actual industry practices.</p>
+          <br>
+          <p><strong>Activities Carried Out:</strong> I had the privilege to be part of the team that developed the RGMS (Research Grant Management System). In this capacity, I was responsible for developing the Front-end and creating User Interface designs using Next.js, while UX designs were created using Figma.</p>
+          <br>
+          <p><strong>Key Observations:</strong> As a Front-End Developer and UI/UX Designer on the RGMS (Research Grant Management System) project, I contributed to building user interfaces using Next.js and designing user experiences using Figma.</p>
+          <br>
+          <p><strong>Skills / Knowledge Gained:</strong> I substantially enhanced my ability in Next.js and frontend programming, and further built my knowledge of UI/UX designing through the use of Figma. I have also had the chance to gain experience with Git and its utilization in a team setting.</p>
+          <br>
+          <p><strong>Reflection:</strong> The internship proved to be extremely valuable to me. This allowed me to combine knowledge and practical skills and develop scalable and secure applications. This internship increased my desire to work in full-stack development in the future.</p>
+        </div>
+      </div>
+
+      <!-- VISIT 2 -->
+       <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <h3>Graphic Designer - Freelance</h3>
+          <p style="font-size:0.78rem; color: var(--text-muted); margin-bottom:0.75rem;">Fiverr &nbsp;|&nbsp; ⏱ 2024 - 2025</p>
+          <p><strong>Purpose:</strong>Freelance Graphic Designer specializing in Photoshop and CorelDRAW. Experienced in delivering client-focused visual identities and professional designs via Fiverr.</p>
+          <br>
+          <p><strong>Activities Carried Out:</strong>Graphic designer on Fiverr projects on a freelance basis. Leading the creative design of the visual aspects, interface design, and bespoke online digital assets in order to create a contemporary and easy-to-use experience.</p>
+          <br>
+          <p><strong>Key Observations:</strong> Designed the entire visual design language of the Fiverr. Created all primary graphic, interface visual, and branding materials using used CorelDRAW and Photoshop.</p>
+          <br>
+          <p><strong>Skills / Knowledge Gained:</strong> To create high-quality creative materials, I have invested in learning visual design, whereby I am proficient in CorelDRAW and photoshop.</p>
+          <br>
+          <p><strong>Reflection:</strong> My creativity has been tested in the ultimate way through freelancing. I have laid down the rudiments of simple concepts and advanced to proper, professional brand material using Photoshop and CorelDRAW. Each project that I finish makes me want to challenge the limits of graphic design and deliver to my clients nothing short of the best.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 6. CLUBS & LEADERSHIP ── -->
+  <section id="clubs" class="section">
+    <div class="page-title">Club Activities & Leadership</div>
+    <div class="page-subtitle">Student engagement and soft skill development</div>
+
+    <!-- CLUB 1 -->
+    <div class="card card-accent">
+      <h3>Legion Society - University of Kelaniya</h3>
+      <p style="font-size:0.78rem; color:var(--accent); margin-bottom:0.75rem; font-weight:600;">Vice President · Term 23/24</p>
+      <p><strong>Events / Activities:</strong> Co-Chair of Inter Faculty E-Sports Championship, Coordinator of Inter University E-Sports Tournaments</p>
+      <br>
+      <p><strong>Contributions Made:</strong> Leadership, Volunteering, Event Organization</p>
+      <br>
+      <p><strong>Skills Developed:</strong> Leadership, teamwork, communication, event planning</p>
+    </div>
+
+    <!-- CLUB 2 -->
+    <div class="card card-accent">
+      <h3>Legion Society - University of Kelaniya</h3>
+      <p style="font-size:0.78rem; color:var(--accent); margin-bottom:0.75rem; font-weight:600;">Co-Editor · Term 22/23</p>
+      <p><strong>Events / Activities:</strong> Inizio, Graphic Design Workshops, Game and Animation workshops</p>
+      <br>
+      <p><strong>Contributions Made:</strong> Graphic design, content creation, event coordination</p>
+      <br>
+      <p><strong>Skills Developed:</strong> Graphic design, content creation</p>
+    </div>
+
+    <!-- CLUB 3 -->
+    <div class="card card-accent">
+      <h3>FCT Sheild 2025</h3>
+      <p style="font-size:0.78rem; color:var(--accent); margin-bottom:0.75rem; font-weight:600;">Media Team Member · 2025</p>
+      <p><strong>Event:</strong> FCT Sheild 2025 Cricket Tournament</p>
+      <br>
+      <p><strong>Contributions Made:</strong> Graphic design, content creation, Video Editing, Presenting</p>
+      <br>
+      <p><strong>Skills Developed:</strong> Graphic design, content creation, Video Editing, Presenting</p>
+    </div>
+
+    <!-- CLUB 3 -->
+    <div class="card card-accent">
+      <h3>FCT Sheild 2026</h3>
+      <p style="font-size:0.78rem; color:var(--accent); margin-bottom:0.75rem; font-weight:600;">Media Team Member · 2026</p>
+      <p><strong>Event:</strong> FCT Sheild 2026 Cricket Tournament</p>
+      <br>
+      <p><strong>Contributions Made:</strong> Graphic design, content creation, Video Editing, Videography</p>
+      <br>
+      <p><strong>Skills Developed:</strong> Graphic design, content creation, Video Editing, Videography</p>
+    </div>
+
+    <!-- CLUB 3 -->
+    <div class="card card-accent">
+      <h3>FCT Research Symposium - 2025</h3>
+      <p style="font-size:0.78rem; color:var(--accent); margin-bottom:0.75rem; font-weight:600;">Design Team Member · 2025</p>
+      <p><strong>Event:</strong> FCT Research Symposium 2025</p>
+      <br>
+      <p><strong>Contributions Made:</strong> Graphic design</p>
+      <br>
+      <p><strong>Skills Developed:</strong> Graphic design</p>
+    </div>
+
+    <div class="card card-accent">
+      <h3>FCT Openday - 2025</h3>
+      <p style="font-size:0.78rem; color:var(--accent); margin-bottom:0.75rem; font-weight:600;">Media Team Member · 2025</p>
+      <p><strong>Event:</strong> FCT Openday 2025</p>
+      <br>
+      <p><strong>Contributions Made:</strong> Graphic design, Video Editing</p>
+      <br>
+      <p><strong>Skills Developed:</strong> Graphic design, Video Editing</p>
+    </div>
+
+    <div class="card card-accent">
+      <h3>Salalihini - 2025</h3>
+      <p style="font-size:0.78rem; color:var(--accent); margin-bottom:0.75rem; font-weight:600;">Digital Media Director · 2025</p>
+      <p><strong>Event:</strong> Salalihini 2025</p>
+      <br>
+      <p><strong>Contributions Made:</strong> Graphic design, Video Editing, Digital Marketing Management</p>
+      <br>
+      <p><strong>Skills Developed:</strong> Graphic design, Video Editing, Digital Marketing Management</p>
+    </div>
+
+    <h2>Soft Skills in Action</h2>
+    <div class="card-grid">
+      <div class="card"><h3>🗣️ Communication</h3><p>In my capacity as the Digital Media Director and Vice President, I was the main point of contact for bridging the gap between technical personnel and other parties. This involved turning event requirements into visual ideas that ensured that all marketing materials from E-Sports tournaments to conferences conveyed the right message.</p></div>
+      <div class="card"><h3>👥 Teamwork</h3><p>I have been working collaboratively in multidisciplinary teams of media experts in events such as the FCT Shield (2025/2026) and the Legion Society. In these capacities, I have worked with videographers and other content developers while contributing to the creation of the visual aspect of the media using Photoshop graphics.</p></div>
+      <div class="card"><h3>⏰ Time Management</h3><p>I was able to effectively manage both my studies and my work at the same time since I had to design several large-scale university events, including FCT Open Day and Research Symposium. It demanded effective scheduling to complete all social media graphic design, video editing, and printing on time before the events started.</p></div>
+      <div class="card"><h3>🔧 Problem Solving</h3><p>While taking part in the Inter-Faculty E-Sports Championship, we had the problem of designing a unique identity for various video games within a limited period of time. This problem was solved through the creation of a flexible design template in Photoshop that facilitated quick design of the tournament materials.</p></div>
+    </div>
+  </section>
+
+  <!-- ── 7. RESEARCH & ENGAGEMENT ── -->
+  <!-- <section id="research" class="section">
+    <div class="page-title">Research & Academic Engagement</div>
+    <div class="page-subtitle">Academic exposure beyond lectures</div> -->
+
+    <!-- EVENT 1 -->
+    <!-- <div class="card">
+      <h3>[Title of Event / Symposium / Workshop]</h3>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.75rem;">
+        🏛️ [Institution / Organizer] &nbsp;|&nbsp; 📅 [Date] &nbsp;|&nbsp;
+        🏷️ [Type: Conference / Workshop / Symposium] &nbsp;|&nbsp;
+        👤 [Your Role: Participant / Presenter]
+      </p>
+      <p><strong>Key Learnings:</strong> [What did you gain from attending or presenting at this event? What new knowledge or perspectives did you encounter?]</p>
+    </div> -->
+
+    <!-- EVENT 2 -->
+    <!-- <div class="card">
+      <h3>[Title of Event 2]</h3>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.75rem;">
+        🏛️ [Institution / Organizer] &nbsp;|&nbsp; 📅 [Date] &nbsp;|&nbsp;
+        🏷️ [Type] &nbsp;|&nbsp; 👤 [Your Role]
+      </p>
+      <p><strong>Key Learnings:</strong> [What you learned]</p>
+    </div> -->
+
+    <!-- Add more events as needed -->
+    <!-- <p style="font-size:0.82rem; color:var(--text-muted); margin-top:1rem;">
+      💡 <em>If you have not attended any conferences yet, include any relevant workshops, online webinars, or academic seminars from your university.</em>
+    </p>
+  </section> -->
+
+  <!-- ── 8. CERTIFICATIONS ── -->
+  <section id="certifications" class="section">
+    <div class="page-title">Certifications & Courses</div>
+    <div class="page-subtitle">Online learning</div>
+
+    <div class="cert-card">
+      <div class="cert-icon">🎓</div>
+      <div>
+        <h3>Full-Stack Web Development</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">University of Moratuwa</p>
+        <p style="font-size:0.82rem;">The full stack web development program of University of 
+          Moratuwa is composed of six major areas which are Python for Beginners, Web Design, 
+          Python Programming, Front-End Development, Server-side Web Programming and Professional 
+          Software Practices. This course gives you hands-on experience building full web 
+          applications using the MERN stack. It has helped me in my theoretical studies and 
+          practical skills in full-stack web development and has improved my knowledge of 
+          frontend and backend development.</p>
+      </div>
+    </div>
+
+    <div class="cert-card">
+      <div class="cert-icon">📜</div>
+      <div>
+        <h3>Advanced Linux Program</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">Free and Open Source Software Community - University of Kelaniya</p>
+        <p style="font-size:0.82rem;">Advanced Linux Program at FOSS Community - University of 
+          Kelaniya, where I got hands-on experience on Linux system operations, command line usage 
+          and open source technologies. This program was instrumental in strengthening my 
+          foundation as a Linux Associate and upskilling me to work in open source environments.</p>
+      </div>
+    </div>
+
+    <div class="cert-card">
+      <div class="cert-icon">🏅</div>
+      <div>
+        <h3>Facebook Marketing for Beginners</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">Loku Business</p>
+        <p style="font-size:0.82rem;">In the Loku Business Facebook Marketing for Beginners 
+          course I learned the basics of marketing products and services on Facebook. The course 
+          taught how to target audiences, create ads, and measure their performance. This knowledge 
+          has been useful in understanding digital marketing strategies and how they can be applied 
+          in real life scenarios.</p>
+      </div>
+    </div>
+
+    <div class="cert-card">
+      <div class="cert-icon">🏅</div>
+      <div>
+        <h3>Programming Fundamentals</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted);">Coursera</p>
+        <p style="font-size:0.82rem;">As I took the Programming Fundamentals course at Coursera, 
+          I was introduced to fundamental programming concepts and problem-solving methods. 
+          This course gave me a firm base in the concept of programming and improved my analyzing 
+          skills.</p>
+      </div>
+    </div>
+
+    <!-- <p style="font-size:0.82rem; color:var(--text-muted); margin-top:1rem;">
+      💡 <em>Include free Coursera / edX certificates, Cisco NetAcad, Google Digital Garage, or any university workshop completion certificates.</em>
+    </p> -->
+  </section>
+
+  <!-- ── 9. ACHIEVEMENTS ── -->
+  <section id="achievements" class="section">
+    <div class="page-title">Achievements & Extracurricular</div>
+    <div class="page-subtitle">Competitions and awards</div>
+
+    <h2>Competitions & Awards</h2>
+
+    <div class="achievement">
+      <div class="ach-icon">🥇</div>
+      <div>
+        <h3>CodeFest Hackathon - Finalist (Team codeX)</h3>
+        <p style="font-size:0.82rem;">Organized by Faculty of Computing, SLIIT</p>
+      </div>
+    </div>
+
+    <div class="achievement">
+      <div class="ach-icon">🏆</div>
+      <div>
+        <h3>Devthon 3.0 - Semi-Finalist (Team colorS)</h3>
+        <p style="font-size:0.82rem;">Organized by Leo Club of University of Moratuwa</p>
+      </div>
+    </div>
+
+    <!-- <h2>Volunteering</h2>
+    <div class="card">
+      <h3>[Volunteering Activity / Organization]</h3>
+      <p>[What did you volunteer for? What impact did your contribution have? When and how long?]</p>
+    </div> -->
+
+    <!-- <h2>Non-Academic Achievements</h2>
+    <div class="achievement">
+      <div class="ach-icon">⭐</div>
+      <div>
+        <h3>Salalihini 2025</h3>
+        <p style="font-size:0.82rem;">Presenter</p>
+      </div>
+    </div> -->
+  </section>
+
+  <!-- ── 10. REFLECTION ── -->
+  <section id="reflection" class="section">
+    <div class="page-title">Reflection Section</div>
+    <div class="page-subtitle">Personal reflections on my university journey</div>
+
+    <!-- REFLECTION 1 -->
+    <div class="reflection-card">
+      <div class="reflection-label">Reflection 1</div>
+      <h3>DriveDrip - Group Project Experience</h3>
+      <br>
+      <div class="reflection-grid">
+        <div class="rg-item">
+          <span>Experience</span>
+          <p>I was the team leader of a team of five members developing DRIVEDRIP, a spare parts platform that uses 3D technology to visualize the vehicle's spare parts. I worked on the frontend of the website using React.js and Three.js, doing market research with over 50 participants. We successfully delivered a working version of the DRIVEDRIP website that included a 3D customization feature, an artificial intelligence-based chatbot, and a marketplace feature. The entire project was developed using a collaborative approach in GitHub.</p>
+        </div>
+        <div class="rg-item">
+          <span>Learning</span>
+          <p>My exposure to the technologies React.js, TailwindCSS, and Three.js has been very useful since all were new to me. Besides programming, my ability in research was enhanced by surveys and interviews, which taught me that feedback from the users is necessary to justify assumptions. Leadership qualities such as teamwork, communication, and conflict resolution have also been sharpened because of being the team leader.</p>
+        </div>
+        <div class="rg-item">
+          <span>Challenges</span>
+          <p>The use of Three.js for the purpose of creating 3D models proved to be the most challenging aspect since I had no previous experience in 3D programming. Managing five people on one project led to conflicts during code merging on GitHub due to uneven proficiency levels. Time allocation between research work and coding remained difficult. Survey results collected at the initial stages needed further interviewing.</p>
+        </div>
+        <div class="rg-item">
+          <span>Solutions & Future Improvements</span>
+          <p>Three.js problems were solved via online guides and forum posts. Weekly discussions, structured GitHub development practices, and code reviews were implemented to facilitate collaboration within the team. Enhanced user feedback was gained through on-site presentations rather than using surveys.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- REFLECTION 2 -->
+    <div class="reflection-card">
+      <div class="reflection-label">Reflection 2</div>
+      <h3>CivicResolve - Hackathon Project</h3>
+      <br>
+      <div class="reflection-grid">
+        <div class="rg-item">
+          <span>Experience</span>
+          <p>As part of the team working on CivicResolve, a web-based application that enables people to submit and follow up on issues regarding the state of community infrastructure such as damaged roads, I concentrated on creating the application’s graphical design and designing its front end.</p>
+        </div>
+        <div class="rg-item">
+          <span>Learning</span>
+          <p>It also made me proficient at making links between graphic design and practical engineering. In addition, I was able to convert community requirements into an operational digital application and develop great skills in user-centered design and Next.js based web application architecture.</p>
+        </div>
+        <div class="rg-item">
+          <span>Challenges</span>
+          <p>The first challenge was to strike a balance between an elaborate data reporting system and an easy-to-use interface. Furthermore, making sure that the platform is responsive and secure during real-time location tracking was technically difficult.</p>
+        </div>
+        <div class="rg-item">
+          <span>Solutions & Future Improvements</span>
+          <p>By implementing a modular design approach and conducting thorough testing, we were able to address the responsiveness and security concerns. For future projects, I plan to allocate more time for planning and prototyping to mitigate such technical challenges.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- REFLECTION 3 -->
+    <!-- <div class="reflection-card">
+      <div class="reflection-label">Reflection 3</div>
+      <h3>[Title — e.g., Communication and Presentation Skills (DELT)]</h3>
+      <br>
+      <div class="reflection-grid">
+        <div class="rg-item">
+          <span>Experience</span>
+          <p>[Describe your experiences with presentations, impromptu speeches, or DELT activities]</p>
+        </div>
+        <div class="rg-item">
+          <span>Learning</span>
+          <p>[How did these activities improve your communication and confidence?]</p>
+        </div>
+        <div class="rg-item">
+          <span>Challenges</span>
+          <p>[What challenges did you face — nervousness, language, structure, etc.?]</p>
+        </div>
+        <div class="rg-item">
+          <span>Solutions & Future Improvements</span>
+          <p>[How did you work on these challenges? What are your plans to improve further?]</p>
+        </div>
+      </div>
+    </div> -->
+  </section>
+
+  <!-- ── 11. CAREER GOALS ── -->
+  <section id="goals" class="section">
+    <div class="page-title">Career Goals & Future Development</div>
+    <div class="page-subtitle">My vision and plan for professional growth</div>
+
+    <div class="card-grid">
+      <div class="goal-card">
+        <h3>⚡ Short-Term Goals <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">(1–2 Years)</span></h3>
+        <ul class="goal-list">
+          <li>Complete my degree with strong academic results</li>
+          <li>Obtain an internship in an Sri Lanka Software company</li>
+          <li>Improve my programming skills through online courses and participation in coding challenges</li>
+          <li>Learn Cloud Technologies</li>
+        </ul>
+      </div>
+
+      <div class="goal-card">
+        <h3>🚀 Long-Term Goals <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">(3–10 Years)</span></h3>
+        <ul class="goal-list">
+          <li>Become a professional Software engineer</li>
+          <li>Work in a Top Sri Lanka Software company</li>
+          <li>Pursue a postgraduate degree in a Cloud Computing field</li>
+          <li>Create a successful software solutions company</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>Skills to be Developed</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>🔧 Technical</h3>
+        <p>Skilled in Frontend and scalable system architecture with Next.js. I have extensive experience in UI/UX design combined with cloud-native thinking to create secure and high-performance web applications.</p>
+      </div>
+      <div class="card">
+        <h3>📊 Professional</h3>
+        <p>Skilled in project management and technical leadership using Agile. I am also an effective communicator in closing the divide between stakeholder needs and technical implementation, resulting in quality code delivery and effective teamwork.</p>
+      </div>
+      <div class="card">
+        <h3>🌐 Industry Knowledge</h3>
+        <p>Comprehensive knowledge of SDLC and current cloud architecture. I remain abreast of industry developments within the IT landscape of Sri Lanka by emphasizing how cloud computing and digitalization add value to businesses.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 12. CONTACT ── -->
+  <section id="contact" class="section">
+    <div class="page-title">Contact Information</div>
+    <div class="page-subtitle">Let's connect!</div>
+
+    <a class="contact-link" href="mailto:youremail@example.com">
+      <div class="contact-icon" style="background:#fff0f0;">📧</div>
+      <div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.15rem;">EMAIL</div>
+        <div style="font-weight:500;">pramodayaamayuru@gmail.com</div>
+      </div>
+    </a>
+
+    <a class="contact-link" href="https://www.linkedin.com/in/amayuru-pramodaya-50703a298" target="_blank">
+      <div class="contact-icon" style="background:#e8f4ff;">🔗</div>
+      <div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.15rem;">LINKEDIN</div>
+        <div style="font-weight:500;">linkedin.com/in/amayuru-pramodaya</div>
+      </div>
+    </a>
+
+    <a class="contact-link" href="https://github.com/AmayuruPramodaya" target="_blank">
+      <div class="contact-icon" style="background:#f0f0f0;">💻</div>
+      <div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.15rem;">GITHUB</div>
+        <div style="font-weight:500;">github.com/AmayuruPramodaya</div>
+      </div>
+    </a>
+
+    <a class="contact-link" href="https://amayurupramodaya.github.io/Portfolio/" target="_blank">
+      <div class="contact-icon" style="background:#eafaf1;">💼</div>
+      <div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.15rem;">PORTFOLIO</div>
+        <div style="font-weight:500;">amayurupramodaya.github.io/Portfolio/</div>
+      </div>
+    </a>
+
+    <!-- <div style="margin-top:2rem; padding:1.25rem; background:var(--accent-light); border-radius:var(--radius); border:1px solid #c5d8ff;">
+      <p style="font-size:0.83rem; color:#1a3460;">
+        📌 <strong>Note:</strong> This e-portfolio was created as part of CA 02 — DELT 22552, Year 2.
+        All content reflects my personal academic journey and experiences.
+      </p>
+    </div> -->
+  </section>
+
+</main>
+
+<script>
+  function showSection(id, link) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (link) link.classList.add('active');
+    
+    // Close mobile menu when a section is clicked
+    const navMenu = document.getElementById('navMenu');
+    if (navMenu && window.innerWidth <= 768) {
+      navMenu.classList.remove('active');
+      document.getElementById('menuToggle').textContent = '☰';
+    }
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return false;
+  }
+
+  // Mobile menu toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        // Change icon based on state
+        if (navMenu.classList.contains('active')) {
+          menuToggle.textContent = '✕';
+        } else {
+          menuToggle.textContent = '☰';
+        }
+      });
+    }
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      if (navMenu && navMenu.classList.contains('active')) {
+        if (!event.target.closest('#sidebar')) {
+          navMenu.classList.remove('active');
+          if (menuToggle) menuToggle.textContent = '☰';
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>
