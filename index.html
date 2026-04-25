@@ -126,6 +126,23 @@
     text-align: center;
   }
 
+  /* ── MOBILE MENU TOGGLE ── */
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    z-index: 101;
+  }
+
+  .menu-toggle:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
   /* ── MAIN CONTENT ── */
   main {
     margin-left: var(--sidebar-w);
@@ -581,38 +598,51 @@
       gap: 1rem;
       padding: 0 1rem;
       border-bottom: none;
+      text-align: left;
       flex: 1;
+      min-width: 0;
     }
 
     .profile-photo-wrap {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       margin: 0;
       flex-shrink: 0;
+      border-width: 2px;
     }
 
     .sidebar-name {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-bottom: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .sidebar-tag {
-      font-size: 0.6rem;
+      font-size: 0.55rem;
+      display: none;
+    }
+
+    .menu-toggle {
+      display: block;
+      flex-shrink: 0;
     }
 
     nav {
       display: none;
-      position: absolute;
-      top: 100%;
+      position: fixed;
+      top: 70px;
       left: 0;
       right: 0;
+      bottom: 0;
       background: var(--navy);
       flex-direction: column;
       width: 100%;
       padding: 0;
-      max-height: 60vh;
       overflow-y: auto;
       z-index: 99;
+      max-height: none;
     }
 
     nav.active {
@@ -635,6 +665,7 @@
       margin-left: 0;
       padding: 1.5rem 1rem;
       max-width: 100%;
+      width: 100%;
     }
 
     .page-title {
@@ -1030,8 +1061,9 @@
     <div class="sidebar-name">Amayuru Pramodaya</div>
     <div class="sidebar-tag">ICT Undergraduate</div>
   </div>
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu">☰</button>
 
-  <nav>
+  <nav id="navMenu">
     <div class="nav-section-label">Main</div>
     <a href="#" class="active" onclick="showSection('home', this)">
       <span class="nav-icon">🏠</span> Home
@@ -1783,9 +1815,45 @@
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     if (link) link.classList.add('active');
+    
+    // Close mobile menu when a section is clicked
+    const navMenu = document.getElementById('navMenu');
+    if (navMenu && window.innerWidth <= 768) {
+      navMenu.classList.remove('active');
+      document.getElementById('menuToggle').textContent = '☰';
+    }
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return false;
   }
+
+  // Mobile menu toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        // Change icon based on state
+        if (navMenu.classList.contains('active')) {
+          menuToggle.textContent = '✕';
+        } else {
+          menuToggle.textContent = '☰';
+        }
+      });
+    }
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      if (navMenu && navMenu.classList.contains('active')) {
+        if (!event.target.closest('#sidebar')) {
+          navMenu.classList.remove('active');
+          if (menuToggle) menuToggle.textContent = '☰';
+        }
+      }
+    });
+  });
 </script>
 </body>
 </html>
